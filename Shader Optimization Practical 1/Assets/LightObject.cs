@@ -13,22 +13,20 @@ public class LightObject : MonoBehaviour
         SPOT = 2,
     }
     public Type type;
-    [SerializeField] private Vector3 direction = -Vector3.up;
-    [SerializeField] private Material material;
-    [SerializeField] private Color LightColor;
-    [SerializeField]
+    public Vector3 direction = -Vector3.up;
+    public Material material;
+    public Color LightColor;
     [Range(0.0f, 1.0f)]
-    private float smoothness = 1.0f;
-    [SerializeField]
-    private Vector3 attenuation = new Vector3(1.0f, 0.09f, 0.032f);
+    public float smoothness = 1.0f;
+    public Vector3 attenuation = new Vector3(1.0f, 0.09f, 0.032f);
     [Range(0.0f, 360.0f)]
-    public float spotLightCutOff = 20.0f;
+    public float spotLightCutOff = 70.0f;
 
+    [Range(0.0f, 360.0f)]
+    public float spotLightInnerCutOff = 20.0f;
 
-
-    [SerializeField]
     [Range(0.0f, 1.0f)]
-    private float intensity = 1.0f;
+    public float intensity = 1.0f;
 
     // Start is called before the first frame update
     void Start()
@@ -40,7 +38,7 @@ public class LightObject : MonoBehaviour
     {
         direction = transform.rotation * new Vector3(0, -1, 0);
         direction = direction.normalized;
-        SendToShader();
+        //SendToShader();
     }
 
     private void OnDrawGizmos()
@@ -50,17 +48,17 @@ public class LightObject : MonoBehaviour
         Gizmos.DrawRay(transform.position, direction * 10.0f);
     }
 
-    private void SendToShader()
-    {
-        material.SetVector("_lightPosition", transform.position);
-        material.SetVector("_lightDirection", direction);
-        material.SetColor("_lightColor", LightColor);
-        material.SetFloat("_smoothness", smoothness);
-        material.SetInteger("_lightType", (int)type);
-        material.SetFloat("_lightIntensity", intensity);
-        material.SetVector("_attenuation", attenuation);
-        material.SetFloat("_spotLightCutOff", spotLightCutOff);
-    }
+    //private void SendToShader()
+    //{
+    //    material.SetVectorArray("_lightPosition", transform.position);
+    //    material.SetVector("_lightDirection", direction);
+    //    material.SetColor("_lightColor", LightColor);
+    //    material.SetFloat("_smoothness", smoothness);
+    //    material.SetInteger("_lightType", (int)type);
+    //    material.SetFloat("_lightIntensity", intensity);
+    //    material.SetVector("_attenuation", attenuation);
+    //    material.SetFloat("_spotLightCutOff", spotLightCutOff);
+    //}
 
     public Material GetMaterial()
     {

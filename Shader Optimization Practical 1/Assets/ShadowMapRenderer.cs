@@ -8,14 +8,11 @@ public class ShadowMapRenderer : MonoBehaviour
 {
     [SerializeField]
     private LightObject lightObject;
-    [SerializeField]
-    private int shadowMapResolution = 1024;
-    [SerializeField]
-    private float shadowBias = 0.005f;
-    [SerializeField]
-    private int shadowFilterSize = 1;
-    private Camera lightCamera;
-    private RenderTexture shadowMap;
+    public int shadowMapResolution = 1024;
+    public float shadowBias = 0.005f;
+    public int shadowFilterSize = 1;
+    public Camera lightCamera;
+    public RenderTexture shadowMap;
     // Start is called before the first frame update
     void Start()
     {
@@ -34,7 +31,7 @@ public class ShadowMapRenderer : MonoBehaviour
         if (lightCamera == null || shadowMap == null)
             return;
         UpdateLightCamera();
-        SendShadowDataToShader();
+        //SendShadowDataToShader();
     }
 
     private void CreateLightCamera()
@@ -82,21 +79,21 @@ public class ShadowMapRenderer : MonoBehaviour
         lightCamera.Render();
     }
 
-    private void SendShadowDataToShader()
-    {
-        Material material = lightObject.GetMaterial();
-        if(material == null) return;
+    //private void SendShadowDataToShader()
+    //{
+    //    //Material material = lightObject.GetMaterial();
+    //    //if(material == null) return;
 
-        Matrix4x4 lightViewProjMatrix = lightCamera.projectionMatrix * lightCamera.worldToCameraMatrix;
-        //material.SetTexture("af", shadowMap, Ren)
-        material.SetTexture("_shadowMap", shadowMap);
-        material.SetFloat("_shadowBias", shadowBias);
-        material.SetMatrix("_lightViewProj", lightViewProjMatrix);
+    //    //Matrix4x4 lightViewProjMatrix = lightCamera.projectionMatrix * lightCamera.worldToCameraMatrix;
+    //    ////material.SetTexture("af", shadowMap, Ren)
+    //    //material.SetTexture("_shadowMap", shadowMap);
+    //    //material.SetFloat("_shadowBias", shadowBias);
+    //    //material.SetMatrix("_lightViewProj", lightViewProjMatrix);
 
-        material.SetFloat("_shadowMapWidth", shadowMap.width);
-        material.SetFloat("_shadowMapHeight", shadowMap.height);
-        material.SetInt("_shadowMapFilterSize", shadowFilterSize);
-    }
+    //    //material.SetFloat("_shadowMapWidth", shadowMap.width);
+    //    //material.SetFloat("_shadowMapHeight", shadowMap.height);
+    //    //material.SetInt("_shadowMapFilterSize", shadowFilterSize);
+    //}
 
     private void OnDestroy()
     {
