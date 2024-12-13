@@ -13,8 +13,8 @@ TextureImporter:
     borderMipMap: 0
     mipMapsPreserveCoverage: 1
     alphaTestReferenceValue: 0.5
-    mipMapFadeDistanceStart: 0
-    mipMapFadeDistanceEnd: 2
+    mipMapFadeDistanceStart: 8
+    mipMapFadeDistanceEnd: 10
   bumpmap:
     convertToNormalMap: 0
     externalNormalMap: 0
