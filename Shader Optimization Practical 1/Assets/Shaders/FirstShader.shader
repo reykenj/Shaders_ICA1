@@ -124,6 +124,12 @@ Shader "Custom/FirstShader"
 			uniform float _spotLightCutOff;
 			uniform float _spotLightInnerCutOff;
 
+
+			uniform sampler2D _shadowMap;
+			uniform float4x4 _lightViewProj;
+			uniform float _shadowBias;
+
+
 			struct vertexData{
 				float2 uv : TEXCOORD0;
 				float4 position : POSITION;
@@ -135,6 +141,7 @@ Shader "Custom/FirstShader"
 				float4 position : SV_POSITION;
 				float3 normal : NORMAL;
 				float3 worldPosition: POSITION1;
+				float4 shadowCoord: POSITION2;
 			};
 
 			vertex2Fragment MyVertexShader(vertexData vd){
@@ -144,10 +151,35 @@ Shader "Custom/FirstShader"
 				v2f.uv = TRANSFORM_TEX(vd.uv, _mainTexture);
 				v2f.normal = UnityObjectToWorldNormal(vd.normal);
 				v2f.normal = normalize(v2f.normal);
+
+				v2f.shadowCoord = mul(_lightViewProj, float4(v2f.worldPosition, 1.0));
 				return v2f;
 			}
 
+			float ShadowCalculation(float4 fragPosLightSpace){
+				//transform shadow coords
+				float3 shadowCoord = fragPosLightSpace.xyz / fragPosLightSpace.w;
+				//trasnform from clip to texture space
+				shadowCoord = shadowCoord * 0.5 + 0.5;
+
+				// sample shadow map
+				float shadowDepth = 1.0 - tex2D(_shadowMap, shadowCoord.xy).r;
+				float shadowFactor = (shadowCoord.z - _shadowBias > shadowDepth) ? 1.0 : 0.0;
+				// Flip the shadow factor for proper shadowing
+				shadowFactor = saturate(1.0 - shadowFactor);
+
+				return shadowFactor;
+			}
+
 			float4 MyFragmentShader(vertex2Fragment v2f) : SV_TARGET{
+
+				v2f.normal = normalize(v2f.normal);
+				float4 albedo = tex2D(_mainTexture, v2f.uv) * _tint;
+
+				if (albedo.a < _alphaCutoff){
+					discard;
+				}
+				float shadowFactor = ShadowCalculation(v2f.shadowCoord);
 
 				float3 finalLightDirection;
 				float attenuation = 1.0;
@@ -172,8 +204,6 @@ Shader "Custom/FirstShader"
 					}
 				}
 
-				v2f.normal = normalize(v2f.normal);
-				float4 albedo = tex2D(_mainTexture, v2f.uv) * _tint;
 				float3 viewDirection = normalize(_WorldSpaceCameraPos - v2f.worldPosition);
 				float3 reflectionDirection = reflect(-finalLightDirection, v2f.normal);
 				float3 halfVector = normalize(viewDirection + -finalLightDirection);
@@ -181,7 +211,7 @@ Shader "Custom/FirstShader"
 				float3 specularColor = specular * _specularStrength * _lightColor.rgb;
 
 				float3 diffuse = albedo.rgb * _lightColor.rgb * saturate(dot(v2f.normal, -finalLightDirection));
-				float3 finalColor = (diffuse + specularColor) * _lightIntensity * attenuation;
+				float3 finalColor = (diffuse + specularColor) * _lightIntensity * attenuation * shadowFactor;
 				return float4(finalColor, albedo.a);
 			}
 

@@ -62,4 +62,14 @@ public class LightObject : MonoBehaviour
         material.SetVector("_attenuation", attenuation);
         material.SetFloat("_spotLightCutOff", spotLightCutOff);
     }
+
+    public Material GetMaterial()
+    {
+        return material;
+    }
+
+    public Vector3 GetDirection()
+    {
+        return direction;
+    }
 }
