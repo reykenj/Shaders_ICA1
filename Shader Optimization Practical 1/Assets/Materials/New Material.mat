@@ -64,7 +64,7 @@ Material:
         m_Scale: {x: 2, y: 2}
         m_Offset: {x: 0, y: 0}
     m_Ints:
-    - _lightType: 2
+    - _lightType: 1
     m_Floats:
     - _BumpScale: 1
     - _Cutoff: 0.5
@@ -83,7 +83,7 @@ Material:
     - _UVSec: 0
     - _ZWrite: 1
     - _alphaCutoff: 0.5
-    - _lightIntensity: 0.262
+    - _lightIntensity: 0.25
     - _lightType: 1
     - _shadowMapFilterSize: 7
     - _smoothness: 0.5
@@ -95,7 +95,7 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _attenuation: {r: 1, g: 0.09, b: 0.032, a: 0}
     - _lightColor: {r: 1, g: 1, b: 1, a: 0}
-    - _lightDirection: {r: 0, g: -0.10522288, b: 0.9944487, a: 0}
-    - _lightPosition: {r: -5.85, g: 0.565, b: -12.36, a: 0}
+    - _lightDirection: {r: 0, g: -1, b: 0, a: 0}
+    - _lightPosition: {r: -4.74, g: -0.18, b: -5.581, a: 0}
     - _tint: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []

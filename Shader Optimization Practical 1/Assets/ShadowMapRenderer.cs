@@ -78,8 +78,8 @@ public class ShadowMapRenderer : MonoBehaviour
             lightCamera.orthographic = false;
             lightCamera.fieldOfView = lightObject.spotLightCutOff * 2;
         }
-            // Render shadow map manually
-            lightCamera.Render();
+        // Render shadow map manually
+        lightCamera.Render();
     }
 
     private void SendShadowDataToShader()
@@ -88,7 +88,7 @@ public class ShadowMapRenderer : MonoBehaviour
         if(material == null) return;
 
         Matrix4x4 lightViewProjMatrix = lightCamera.projectionMatrix * lightCamera.worldToCameraMatrix;
-
+        //material.SetTexture("af", shadowMap, Ren)
         material.SetTexture("_shadowMap", shadowMap);
         material.SetFloat("_shadowBias", shadowBias);
         material.SetMatrix("_lightViewProj", lightViewProjMatrix);
