@@ -63,7 +63,8 @@ Material:
         m_Texture: {fileID: 2800000, guid: 49c91e95bdad5174daa00add01a64cea, type: 3}
         m_Scale: {x: 2, y: 2}
         m_Offset: {x: 0, y: 0}
-    m_Ints: []
+    m_Ints:
+    - _lightType: 2
     m_Floats:
     - _BumpScale: 1
     - _Cutoff: 0.5
@@ -82,13 +83,18 @@ Material:
     - _UVSec: 0
     - _ZWrite: 1
     - _alphaCutoff: 0.5
-    - _smoothness: 0.051
+    - _lightIntensity: 1
+    - _lightType: 1
+    - _smoothness: 0.5
     - _specularStrength: 0.5
+    - _spotLightCutOff: 70
+    - _spotLightInnerCutOff: 25
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _attenuation: {r: 1, g: 0.09, b: 0.032, a: 0}
     - _lightColor: {r: 1, g: 1, b: 1, a: 0}
     - _lightDirection: {r: 0, g: -1, b: 0, a: 0}
-    - _lightPosition: {r: -1.82, g: 4.8, b: -7.773, a: 0}
+    - _lightPosition: {r: -2.554, g: 1.41, b: -5.954, a: 0}
     - _tint: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
