@@ -97,6 +97,7 @@ Shader "Custom/FirstShader"
 		_attenuation("Attenuation", Vector) = (1.0, 0.09, 0.032)
 		_spotLightCutOff("Spot Light CutOff", Range(0, 360)) = 70
 		_spotLightInnerCutOff("Spot Light Inner CutOff", Range(0, 360)) = 25.0
+		_shadowMapFilterSize("Shadow Map Filter Size", int) = 1
 	}
 
 
@@ -126,8 +127,13 @@ Shader "Custom/FirstShader"
 
 
 			uniform sampler2D _shadowMap;
+
+			uniform float _shadowMapWidth;
+			uniform float _shadowMapHeight;
+
 			uniform float4x4 _lightViewProj;
 			uniform float _shadowBias;
+			uniform int _shadowMapFilterSize;
 
 
 			struct vertexData{
@@ -162,13 +168,26 @@ Shader "Custom/FirstShader"
 				//trasnform from clip to texture space
 				shadowCoord = shadowCoord * 0.5 + 0.5;
 
-				// sample shadow map
-				float shadowDepth = 1.0 - tex2D(_shadowMap, shadowCoord.xy).r;
-				float shadowFactor = (shadowCoord.z - _shadowBias > shadowDepth) ? 1.0 : 0.0;
-				// Flip the shadow factor for proper shadowing
-				shadowFactor = saturate(1.0 - shadowFactor);
+				// reykenj changes
+				float2 TexelSize = float2(1.0 / _shadowMapWidth, 1.0 / _shadowMapHeight);
+				float shadowsum = 0.0;
+				//
+				int halfFilterSize = _shadowMapFilterSize / 2;
+				for (int y = -halfFilterSize; y < -halfFilterSize + _shadowMapFilterSize; y++){
+					for (int x = -halfFilterSize; x < -halfFilterSize + _shadowMapFilterSize; x++){
+						float2 offset = float2(x, y) * TexelSize;
 
-				return shadowFactor;
+						// sample shadow map
+						float shadowDepth = 1.0 - tex2D(_shadowMap, shadowCoord.xy + offset).r;
+
+						float shadowFactor = (shadowCoord.z - _shadowBias > shadowDepth) ? 1.0 : 0.0;
+						// Flip the shadow factor for proper shadowing
+						shadowFactor = saturate(1.0 - shadowFactor);
+						shadowsum += shadowFactor;
+					}
+				}
+				float finalShadowFactor = shadowsum / 9.0;
+				return finalShadowFactor;
 			}
 
 			float4 MyFragmentShader(vertex2Fragment v2f) : SV_TARGET{

@@ -159,7 +159,7 @@ MonoBehaviour:
   smoothness: 0.5
   attenuation: {x: 1, y: 0.09, z: 0.032}
   spotLightCutOff: 70
-  intensity: 1
+  intensity: 0.262
 --- !u!4 &171628417
 Transform:
   m_ObjectHideFlags: 0
@@ -190,7 +190,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lightObject: {fileID: 171628416}
   shadowMapResolution: 1024
-  shadowBias: 0.05
+  shadowBias: 0.005
+  shadowFilterSize: 7
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0

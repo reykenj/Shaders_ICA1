@@ -12,6 +12,8 @@ public class ShadowMapRenderer : MonoBehaviour
     private int shadowMapResolution = 1024;
     [SerializeField]
     private float shadowBias = 0.005f;
+    [SerializeField]
+    private int shadowFilterSize = 1;
     private Camera lightCamera;
     private RenderTexture shadowMap;
     // Start is called before the first frame update
@@ -80,6 +82,10 @@ public class ShadowMapRenderer : MonoBehaviour
         material.SetTexture("_shadowMap", shadowMap);
         material.SetFloat("_shadowBias", shadowBias);
         material.SetMatrix("_lightViewProj", lightViewProjMatrix);
+
+        material.SetFloat("_shadowMapWidth", shadowMap.width);
+        material.SetFloat("_shadowMapHeight", shadowMap.height);
+        material.SetInt("_shadowMapFilterSize", shadowFilterSize);
     }
 
     private void OnDestroy()

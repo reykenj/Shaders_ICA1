@@ -83,8 +83,9 @@ Material:
     - _UVSec: 0
     - _ZWrite: 1
     - _alphaCutoff: 0.5
-    - _lightIntensity: 1
+    - _lightIntensity: 0.262
     - _lightType: 1
+    - _shadowMapFilterSize: 7
     - _smoothness: 0.5
     - _specularStrength: 0.5
     - _spotLightCutOff: 70
