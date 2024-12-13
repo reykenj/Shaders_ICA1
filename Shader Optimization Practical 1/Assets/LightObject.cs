@@ -12,7 +12,7 @@ public class LightObject : MonoBehaviour
         POINT = 1,
         SPOT = 2,
     }
-    [SerializeField] private Type type;
+    public Type type;
     [SerializeField] private Vector3 direction = -Vector3.up;
     [SerializeField] private Material material;
     [SerializeField] private Color LightColor;
@@ -21,9 +21,8 @@ public class LightObject : MonoBehaviour
     private float smoothness = 1.0f;
     [SerializeField]
     private Vector3 attenuation = new Vector3(1.0f, 0.09f, 0.032f);
-    [SerializeField]
     [Range(0.0f, 360.0f)]
-    private float spotLightCutOff = 20.0f;
+    public float spotLightCutOff = 20.0f;
 
 
 

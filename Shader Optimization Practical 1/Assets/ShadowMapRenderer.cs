@@ -67,9 +67,19 @@ public class ShadowMapRenderer : MonoBehaviour
         //sync shadow camera with light transform
         lightCamera.transform.position = lightObject.transform.position;
         lightCamera.transform.forward = lightObject.GetDirection();
-        
-        // Render shadow map manually
-        lightCamera.Render();
+
+        if ((int)lightObject.type == 1)
+        {
+            lightCamera.orthographic = false;
+            lightCamera.fieldOfView = 170;
+        }
+        else if ((int)lightObject.type == 2)
+        {
+            lightCamera.orthographic = false;
+            lightCamera.fieldOfView = lightObject.spotLightCutOff * 2;
+        }
+            // Render shadow map manually
+            lightCamera.Render();
     }
 
     private void SendShadowDataToShader()
@@ -96,7 +106,7 @@ public class ShadowMapRenderer : MonoBehaviour
         }
         if (lightCamera != null)
         {
-            Destroy(lightCamera.gameObject);
+            DestroyImmediate(lightCamera.gameObject);
         }
     }
 

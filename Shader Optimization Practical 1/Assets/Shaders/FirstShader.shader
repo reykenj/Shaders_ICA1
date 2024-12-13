@@ -159,6 +159,9 @@ Shader "Custom/FirstShader"
 				v2f.normal = normalize(v2f.normal);
 
 				v2f.shadowCoord = mul(_lightViewProj, float4(v2f.worldPosition, 1.0));
+				if(_lightType == 1){
+					//v2f.shadowCoord = mul(_lightViewProj, float4(v2f.worldPosition - (v2f.worldPosition - _lightPosition) * 0.5, 1.0));
+				}
 				return v2f;
 			}
 
@@ -167,7 +170,6 @@ Shader "Custom/FirstShader"
 				float3 shadowCoord = fragPosLightSpace.xyz / fragPosLightSpace.w;
 				//trasnform from clip to texture space
 				shadowCoord = shadowCoord * 0.5 + 0.5;
-
 				// reykenj changes
 				float2 TexelSize = float2(1.0 / _shadowMapWidth, 1.0 / _shadowMapHeight);
 				float shadowsum = 0.0;
@@ -179,6 +181,7 @@ Shader "Custom/FirstShader"
 
 						// sample shadow map
 						float shadowDepth = 1.0 - tex2D(_shadowMap, shadowCoord.xy + offset).r;
+						//float shadowFactor = 0.9;
 
 						float shadowFactor = (shadowCoord.z - _shadowBias > shadowDepth) ? 1.0 : 0.0;
 						// Flip the shadow factor for proper shadowing
