@@ -139,7 +139,16 @@ Shader "Custom/FirstShader"
 			uniform float _lightTypes[10];
 
 
-			uniform sampler2D _shadowMap;
+			uniform sampler2D _shadowMap0;
+			uniform sampler2D _shadowMap1;
+			uniform sampler2D _shadowMap2;
+			uniform sampler2D _shadowMap3;
+			uniform sampler2D _shadowMap4;
+			uniform sampler2D _shadowMap5;
+			uniform sampler2D _shadowMap6;
+			uniform sampler2D _shadowMap7;
+			uniform sampler2D _shadowMap8;
+			uniform sampler2D _shadowMap9;
 
 			uniform float _shadowMapWidths[10];
 			uniform float _shadowMapHeights[10];
@@ -171,43 +180,72 @@ Shader "Custom/FirstShader"
 				v2f.normal = normalize(v2f.normal);
 
 				//SHADOW COMMENTED OUT
-				// v2f.shadowCoord = mul(_lightViewProj, float4(v2f.worldPosition, 1.0));
-				// if(_lightType == 1){
-				// 	//v2f.shadowCoord = mul(_lightViewProj, float4(v2f.worldPosition - (v2f.worldPosition - _lightPosition) * 0.5, 1.0));
-				// }
+				for (int i = 0; i < _LIGHTAMT; i++){
+					v2f.shadowCoord[i] = mul(_lightViewProjs[i], float4(v2f.worldPosition, 1.0));
+				}
 				return v2f;
 			}
 
-			// float ShadowCalculation(float4 fragPosLightSpace){
-			// 	//transform shadow coords
-			// 	float3 shadowCoord = fragPosLightSpace.xyz / fragPosLightSpace.w;
-			// 	//trasnform from clip to texture space
-			// 	shadowCoord = shadowCoord * 0.5 + 0.5;
-			// 	// reykenj changes
-			// 	float2 TexelSize = float2(1.0 / _shadowMapWidth, 1.0 / _shadowMapHeight);
-			// 	float shadowsum = 0.0;
-			// 	//
-			// 	int halfFilterSize = _shadowMapFilterSize / 2;
-			// 	for (int y = -halfFilterSize; y < -halfFilterSize + _shadowMapFilterSize; y++){
-			// 		for (int x = -halfFilterSize; x < -halfFilterSize + _shadowMapFilterSize; x++){
-			// 			float2 offset = float2(x, y) * TexelSize;
+			float ShadowCalculation(float4 fragPosLightSpace, const int index){
+				//transform shadow coords
+				float3 shadowCoord = fragPosLightSpace.xyz / fragPosLightSpace.w;
+				//trasnform from clip to texture space
+				shadowCoord = shadowCoord * 0.5 + 0.5;
+				// reykenj changes
+				float2 TexelSize = float2(1.0 / _shadowMapWidths[index], 1.0 / _shadowMapHeights[index]);
+				float shadowsum = 0.0;
+				//
+				int halfFilterSize = _shadowMapFilterSizes[index] / 2;
+				for (int y = -halfFilterSize; y < -halfFilterSize + halfFilterSize * 2; y++){
+					for (int x = -halfFilterSize; x < -halfFilterSize + halfFilterSize * 2; x++){
+						float2 offset = float2(x, y) * TexelSize;
+						float shadowDepth;
+						// sample shadow map
+						if (index == 0){
+							shadowDepth = 1.0 - tex2D(_shadowMap0, shadowCoord.xy + offset).r;
+						}
+						else if (index == 1){
+							shadowDepth = 1.0 - tex2D(_shadowMap1, shadowCoord.xy + offset).r;
+						}
+						else if (index == 2){
+							shadowDepth = 1.0 - tex2D(_shadowMap2, shadowCoord.xy + offset).r;
+						}
+						else if (index == 3){
+							shadowDepth = 1.0 - tex2D(_shadowMap3, shadowCoord.xy + offset).r;
+						}
+						else if (index == 4){
+							shadowDepth = 1.0 - tex2D(_shadowMap4, shadowCoord.xy + offset).r;
+						}
+						else if (index == 5){
+							shadowDepth = 1.0 - tex2D(_shadowMap5, shadowCoord.xy + offset).r;
+						}
+						else if (index == 6){
+							shadowDepth = 1.0 - tex2D(_shadowMap6, shadowCoord.xy + offset).r;
+						}
+						else if (index == 7){
+							shadowDepth = 1.0 - tex2D(_shadowMap7, shadowCoord.xy + offset).r;
+						}
+						else if (index == 8){
+							shadowDepth = 1.0 - tex2D(_shadowMap8, shadowCoord.xy + offset).r;
+						}
+						else if (index == 9){
+							shadowDepth = 1.0 - tex2D(_shadowMap9, shadowCoord.xy + offset).r;
+						}
 
-			// 			// sample shadow map
-			// 			float shadowDepth = 1.0 - tex2D(_shadowMap, shadowCoord.xy + offset).r;
-			// 			//float shadowFactor = 0.9;
+						//float shadowFactor = 0.9;
 
-			// 			float shadowFactor = (shadowCoord.z - _shadowBias > shadowDepth) ? 1.0 : 0.0;
-			// 			// Flip the shadow factor for proper shadowing
-			// 			shadowFactor = saturate(1.0 - shadowFactor);
-			// 			shadowsum += shadowFactor;
-			// 		}
-			// 	}
-			// 	float finalShadowFactor = shadowsum / 9.0;
-			// 	return finalShadowFactor;
-			// }
+						float shadowFactor = (shadowCoord.z - _shadowBiases[index] > shadowDepth) ? 1.0 : 0.0;
+						// Flip the shadow factor for proper shadowing
+						shadowFactor = saturate(1.0 - shadowFactor);
+						shadowsum += shadowFactor;
+					}
+				}
+				float finalShadowFactor = shadowsum / 9.0;
+				return finalShadowFactor;
+			}
 
 			float4 MyFragmentShader(vertex2Fragment v2f) : SV_TARGET{
-
+				float shadowFactor = 0;
 				float3 finalColor = float3(0,0,0);
 				v2f.normal = normalize(v2f.normal);
 				float4 albedo = tex2D(_mainTexture, v2f.uv) * _tint;
@@ -215,9 +253,9 @@ Shader "Custom/FirstShader"
 				if (albedo.a < _alphaCutoff){
 					discard;
 				}
-				// SHADOW COMMENTED OUT
-				//float shadowFactor = ShadowCalculation(v2f.shadowCoord);
 				for (int i = 0; i < _LIGHTAMT; i++){ //might need to add a _LIGHTAMT + 1 later idk
+					// SHADOW COMMENTED OUT
+					shadowFactor = ShadowCalculation(v2f.shadowCoord[i], i);
 					float3 finalLightDirection;
 					float attenuation = 1.0;
 
@@ -249,7 +287,7 @@ Shader "Custom/FirstShader"
 					float3 specularColor = specular * _specularStrength * _lightColors[i].rgb;
 
 					float3 diffuse = albedo.rgb * _lightColors[i].rgb * saturate(dot(v2f.normal, -finalLightDirection));
-					finalColor += (diffuse + specularColor) * _lightIntensities[i] * attenuation; //* shadowFactor; SHADOW COMMENTED OUT
+					finalColor += (diffuse + specularColor) * _lightIntensities[i] * attenuation * shadowFactor;; //* shadowFactor; //SHADOW COMMENTED OUT
 				}
 				return float4(finalColor, albedo.a);
 			}

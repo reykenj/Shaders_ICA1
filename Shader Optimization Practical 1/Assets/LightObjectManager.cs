@@ -95,6 +95,7 @@ public class LightObjectManager : MonoBehaviour
             _lightViewProjs[i] = shadowMapRenderers[i].lightCamera.projectionMatrix * shadowMapRenderers[i].lightCamera.worldToCameraMatrix;
             _shadowBiases[i] = shadowMapRenderers[i].shadowBias;
             _shadowMapFilterSizes[i] = shadowMapRenderers[i].shadowFilterSize;
+            material.SetTexture($"_shadowMap{i}", shadowMapRenderers[i].shadowMap);
         }
 
         // Set arrays on the material
@@ -114,6 +115,11 @@ public class LightObjectManager : MonoBehaviour
         material.SetFloatArray("_shadowBiases", _shadowBiases);
         material.SetFloatArray("_shadowMapFilterSizes", _shadowMapFilterSizes);
         material.SetInt("_LIGHTAMT", LightAmt);
+
+        //for (int i = 0; i < LightAmt; i++)
+        //{
+        //    material.SetTexture($"_shadowMap{i}", shadowMapRenderers[i].shadowMap);
+        //}
 
         //Debug.Log("Running");
         //material.SetInt("_numLights", lightObjects.Length); // Optionally send the count of lights
