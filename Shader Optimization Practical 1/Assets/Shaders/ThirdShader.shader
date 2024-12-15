@@ -56,7 +56,6 @@ Shader "Custom/ThirdShader"
 			}
 
 			float4 MyFragmentShader(vertex2Fragment v2f) : SV_TARGET{
-				//return float4(fv.uv, 0, 1.0f);
 				float4 result = _tint * tex2D(_mainTexture,v2f.uv);
 				clip(result.a -  _alphaCutoff);
 

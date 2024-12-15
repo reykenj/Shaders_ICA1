@@ -51,19 +51,19 @@ Shader "Custom/WaveShader"
             vertex2Fragment MyVertexShader(vertexData vd) {
                 vertex2Fragment v2f;
 
-                // Transform the vertex position
+
                 float2 noiseUV = (vd.uv.xy + _Time.yx * _speed) * _scale;
                 float noiseValue = tex2Dlod(_noiseTexture, float4(noiseUV, 0, 0)).x * _amplitude;
 
-                // Add wave motion
+
                 float wave = sin(vd.position.x * _waveFrequency + _Time.y * _speed) * _waveAmplitude;
 
-                // Combine noise and wave
+
                 float yOffset = noiseValue + wave;
 
-                vd.position.y += yOffset; // Apply the offset to the y-position
+                vd.position.y += yOffset; 
 
-                // Pass data to fragment shader
+
                 v2f.position = UnityObjectToClipPos(vd.position);
                 v2f.uv = TRANSFORM_TEX(vd.uv, _mainTexture);
 
@@ -71,10 +71,10 @@ Shader "Custom/WaveShader"
             }
 
             float4 MyFragmentShader(vertex2Fragment v2f) : SV_TARGET {
-                // Sample the main texture
+
                 float4 result = _tint * tex2D(_mainTexture, v2f.uv);
 
-                // Apply alpha cutoff for transparency
+
                 clip(result.a - _alphaCutoff);
 
                 return result;

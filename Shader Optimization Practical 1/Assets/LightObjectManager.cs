@@ -24,36 +24,12 @@ public class LightObjectManager : MonoBehaviour
             SendToShader(materialRenderers[i]);
         }
     }
-    //private void SendToShader()
-    //{
-    //    Material[] materials;
-    //    Vector3[] _lightPositions;
-    //    Vector3[] _lightDirections;
-    //    Color[] colors;
-    //    float[] intensities;
-    //    Vector3[] _attenuations;
-    //    float[] _spotLightCutOffs;
-    //    float[] _spotLightInnerCutOffs;
-    //    float[] _lightTypes;
-    //    float[] _shadowMapWidths;
-    //    float[] _shadowMapHeights;
-    //    Matrix4x4 _lightViewProjs;
-    //    float[] _shadowBiases;
-    //    float[] _shadowMapFilterSizes;
-
-    //    for (int i = 0; i < lightObjects.Length; i++)
-    //    {
-    //        materials[i] = lightObjects[i].material;
-
-    //    }
-    //}
 
 
     private void SendToShader(Material material)
     {
 
         int LightAmt = 0;
-        // Create arrays to store light properties
         Vector4[] lightPositions = new Vector4[lightObjects.Length];
         Vector4[] lightDirections = new Vector4[lightObjects.Length];
         Color[] lightColors = new Color[lightObjects.Length];
@@ -70,7 +46,6 @@ public class LightObjectManager : MonoBehaviour
         float[] _shadowBiases = new float[lightObjects.Length];
         float[] _shadowMapFilterSizes = new float[lightObjects.Length];
 
-        // Populate arrays with light data
         for (int i = 0; i < lightObjects.Length; i++)
         {
             if (lightObjects[i] == null)
@@ -80,7 +55,6 @@ public class LightObjectManager : MonoBehaviour
             LightAmt++;
             Transform lightTransform = lightObjects[i].transform;
 
-            // Set light properties
             lightPositions[i] = new Vector4(lightTransform.position.x, lightTransform.position.y, lightTransform.position.z, 1);
             lightDirections[i] = new Vector4(lightObjects[i].direction.x, lightObjects[i].direction.y, lightObjects[i].direction.z, 0);
             lightColors[i] = lightObjects[i].LightColor;
@@ -88,7 +62,7 @@ public class LightObjectManager : MonoBehaviour
             attenuations[i] = new Vector4(lightObjects[i].attenuation.x, lightObjects[i].attenuation.y, lightObjects[i].attenuation.z, 0);
             spotLightCutOffs[i] = lightObjects[i].spotLightCutOff;
             spotLightInnerCutOffs[i] = lightObjects[i].spotLightInnerCutOff;
-            lightTypes[i] = (float)lightObjects[i].type; // Assume `type` is an enum
+            lightTypes[i] = (float)lightObjects[i].type; 
 
             if (shadowMapRenderers[i].lightCamera == null || shadowMapRenderers[i].shadowMap == null)
                 continue;
@@ -102,7 +76,6 @@ public class LightObjectManager : MonoBehaviour
             material.SetTexture($"_shadowMap{i}", shadowMapRenderers[i].shadowMap);
         }
 
-        // Set arrays on the material
         material.SetVectorArray("_lightPositions", lightPositions);
         material.SetVectorArray("_lightDirections", lightDirections);
         material.SetColorArray("_lightColors", lightColors);
@@ -119,13 +92,5 @@ public class LightObjectManager : MonoBehaviour
         material.SetFloatArray("_shadowBiases", _shadowBiases);
         material.SetFloatArray("_shadowMapFilterSizes", _shadowMapFilterSizes);
         material.SetInt("_LIGHTAMT", LightAmt);
-
-        //for (int i = 0; i < LightAmt; i++)
-        //{
-        //    material.SetTexture($"_shadowMap{i}", shadowMapRenderers[i].shadowMap);
-        //}
-
-        //Debug.Log("Running");
-        //material.SetInt("_numLights", lightObjects.Length); // Optionally send the count of lights
     }
 }
