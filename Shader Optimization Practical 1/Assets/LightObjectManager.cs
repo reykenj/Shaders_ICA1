@@ -9,6 +9,7 @@ public class LightObjectManager : MonoBehaviour
 
     [SerializeField] LightObject[] lightObjects;
     [SerializeField] ShadowMapRenderer[] shadowMapRenderers;
+    [SerializeField] Material[] materialRenderers;
     // Start is called before the first frame update
     void Start()
     {
@@ -18,7 +19,10 @@ public class LightObjectManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        SendToShader(lightObjects[0].material);
+        for (int i = 0; i < materialRenderers.Length; i++)
+        {
+            SendToShader(materialRenderers[i]);
+        }
     }
     //private void SendToShader()
     //{

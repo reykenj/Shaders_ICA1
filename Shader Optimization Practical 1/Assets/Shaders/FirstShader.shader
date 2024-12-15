@@ -287,7 +287,7 @@ Shader "Custom/FirstShader"
 					float3 specularColor = specular * _specularStrength * _lightColors[i].rgb;
 
 					float3 diffuse = albedo.rgb * _lightColors[i].rgb * saturate(dot(v2f.normal, -finalLightDirection));
-					finalColor += (diffuse + specularColor) * _lightIntensities[i] * attenuation * shadowFactor;; //* shadowFactor; //SHADOW COMMENTED OUT
+					finalColor += (diffuse + specularColor) * _lightIntensities[i] * attenuation * shadowFactor; //* shadowFactor; //SHADOW COMMENTED OUT
 				}
 				return float4(finalColor, albedo.a);
 			}
