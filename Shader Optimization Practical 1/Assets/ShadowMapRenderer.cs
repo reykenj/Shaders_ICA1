@@ -67,7 +67,7 @@ public class ShadowMapRenderer : MonoBehaviour
 
         if ((int)lightObject.type == 1)
         {
-            lightCamera.orthographic = false;
+            lightCamera.orthographic = true;
             lightCamera.fieldOfView = 170;
         }
         else if ((int)lightObject.type == 2)
